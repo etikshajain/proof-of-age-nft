@@ -10,13 +10,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const yourToken = await ethers.getContract("YourToken", deployer);
 
   // Todo: deploy the vendor
-  console.log("here2")
   await deploy("Vendor", {
     from: deployer,
     args: [yourToken.address], // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     log: true,
   });
-  console.log("here1")
   const vendor = await ethers.getContract("Vendor", deployer);
 
   // Todo: transfer the tokens to the vendor
