@@ -16,6 +16,21 @@ contract RiggedRoll is Ownable {
     }
 
     //Add withdraw function to transfer ether from the rigged contract to an address
+    // Can only be called by the owner of the contract
+    function withdraw(address payable _addr, uint256 _amount) public onlyOwner payable {
+        // The amount of eth in the contract to withdraw
+        uint256 contract_balance = address(this).balance;
+
+        // Make sure that it is non zero balance
+        require(contract_balance>0, "No eth balance to withdraw!");
+
+        // Check whether the contract has enough eth
+        require(contract_balance>=_amount, "Not enough eth in the contract");
+
+        // Withdraw eth
+        (bool sent, ) = _addr.call{value: _amount}("");
+        require(sent, "Failed to withdraw!");
+    }
 
     //Add riggedRoll() function to predict the randomness in the DiceGame contract and only roll when it's going to be a winner
     function riggedRoll() public payable {
@@ -27,18 +42,15 @@ contract RiggedRoll is Ownable {
 
         console.log('\t',"   Predicted Roll:",roll);
 
-        if(roll>2){
-            return;
-        }
-        else{
-            // Check that this contract has atleast 0.002 eth
-            uint256 ValueToSend = 0.002 ether;
-            require(address(this).balance>=ValueToSend, "You do not have enough eth to make a roll!");
+        // Check that this contract has atleast 0.002 eth
+        uint256 ValueToSend = 0.002 ether;
+        require(address(this).balance>=ValueToSend, "You do not have enough eth to make a roll!");
 
-            // Make the roll
-            diceGame.rollTheDice{value: ValueToSend}();
-            // require(sent, "Failed to roll dice!");
-        }
+        require(roll<=2, "Not a winner roll!, try again!");
+
+        // Make the roll
+        diceGame.rollTheDice{value: ValueToSend}();
+        // require(sent, "Failed to roll dice!");
     }
 
     //Add receive() function so contract can receive Eth
