@@ -5,6 +5,8 @@ import "hardhat/console.sol";
 
 contract DiceGame {
 
+    // this contract is deployed by etikshajain
+
     uint256 public nonce = 0;
     uint256 public prize = 0;
 
