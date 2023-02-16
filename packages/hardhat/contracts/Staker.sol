@@ -33,7 +33,7 @@ contract Staker {
    }
 
    modifier deadlineHasNotPassed {
-      require(block.timestamp < deadline, "The deadline for staking has been reached yet.");
+      require(block.timestamp < deadline, "The deadline for staking has been reached.");
       _;
    }
 
@@ -67,7 +67,8 @@ contract Staker {
     
     if(contract_balance>=threshold){
       // If the threshold has been met, tranfer funds to example contract
-      exampleExternalContract.complete{value: address(this).balance}();
+      (bool sent, ) = address(exampleExternalContract).call{value: address(this).balance}(abi.encodeWithSignature("complete()"));
+      require(sent, "Transfer of funds failed");
     }
     else{
       // If the threshold has not been met, open the contract for withdraw
@@ -102,6 +103,9 @@ contract Staker {
 
   // Add the `receive()` special function that receives eth and calls stake()
   receive() external payable deadlineHasNotPassed {
+    // When someone send eth directly to the contract, call the stake function on his behalf
+    (bool sent, ) = msg.sender.call{value: msg.value}(abi.encodeWithSignature("stake()"));
+    require(sent, "Transaction failed");
   }
 
 }
