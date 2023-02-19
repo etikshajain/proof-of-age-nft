@@ -7,15 +7,24 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  // You might need the previously deployed renderer:
+  const renderer = await ethers.getContract("Renderer", deployer);
+
   await deploy("YourCollectible", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [renderer.address],
     log: true,
   });
 
   // Getting a previously deployed contract
   const yourCollectible = await ethers.getContract("YourCollectible", deployer);
+
+  // ToDo: change address to your frontend address vvvv
+  // console.log("\n 🤹  Sending ownership to frontend address...\n")
+  // const ownershipTransaction = await yourCollectible.transferOwnership("0x064A540B457801e0a3D40EDCe2BadA6EBe727B54");
+  // console.log("\n    ✅ confirming...\n");
+  // const ownershipResult = await ownershipTransaction.wait();
 
   // ToDo: Verify your contract with Etherscan for public chains
   // if (chainId !== "31337") {
