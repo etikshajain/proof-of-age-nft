@@ -6,6 +6,8 @@ const { utils } = require("ethers");
 const R = require("ramda");
 const ipfsAPI = require("ipfs-http-client");
 
+const getFirstTransaction = require("../api/index.js")
+
 
 /*
 const ipfs = ipfsAPI({
@@ -32,121 +34,31 @@ const main = async () => {
   const { deployer } = await getNamedAccounts();
   const yourCollectible = await ethers.getContract("YourCollectible", deployer);
 
-  const buffalo = {
-    description: "It's actually a bison?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-    name: "Buffalo",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "green",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 42,
-      },
-    ],
-  };
-  console.log("Uploading buffalo...");
-  const uploaded = await ipfs.add(JSON.stringify(buffalo));
+  // const fish = {
+  //   description: "Is that an underbyte?",
+  //   external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //   image: "https://austingriffith.com/images/paintings/fish.jpg",
+  //   name: "Fish",
+  //   attributes: [
+  //     {
+  //       trait_type: "BackgroundColor",
+  //       value: "blue",
+  //     },
+  //     {
+  //       trait_type: "Eyes",
+  //       value: "googly",
+  //     },
+  //     {
+  //       trait_type: "Stamina",
+  //       value: 15,
+  //     },
+  //   ],
+  // };
+  console.log("Fetching first transaction timestamp...");
+  const first_txn_timestamp = await getFirstTransaction(toAddress);
 
-  console.log("Minting buffalo with IPFS hash (" + uploaded.path + ")");
-  await yourCollectible.mintItem(toAddress, uploaded.path, {
-    gasLimit: 400000,
-  });
-
-  await sleep(delayMS);
-
-  const zebra = {
-    description: "What is it so worried about?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/zebra.jpg",
-    name: "Zebra",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "blue",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 38,
-      },
-    ],
-  };
-  console.log("Uploading zebra...");
-  const uploadedzebra = await ipfs.add(JSON.stringify(zebra));
-
-  console.log("Minting zebra with IPFS hash (" + uploadedzebra.path + ")");
-  await yourCollectible.mintItem(toAddress, uploadedzebra.path, {
-    gasLimit: 400000,
-  });
-
-  await sleep(delayMS);
-
-  const rhino = {
-    description: "What a horn!",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/rhino.jpg",
-    name: "Rhino",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "pink",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 22,
-      },
-    ],
-  };
-  console.log("Uploading rhino...");
-  const uploadedrhino = await ipfs.add(JSON.stringify(rhino));
-
-  console.log("Minting rhino with IPFS hash (" + uploadedrhino.path + ")");
-  await yourCollectible.mintItem(toAddress, uploadedrhino.path, {
-    gasLimit: 400000,
-  });
-
-  await sleep(delayMS);
-
-  const fish = {
-    description: "Is that an underbyte?",
-    external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-    image: "https://austingriffith.com/images/paintings/fish.jpg",
-    name: "Fish",
-    attributes: [
-      {
-        trait_type: "BackgroundColor",
-        value: "blue",
-      },
-      {
-        trait_type: "Eyes",
-        value: "googly",
-      },
-      {
-        trait_type: "Stamina",
-        value: 15,
-      },
-    ],
-  };
-  console.log("Uploading fish...");
-  const uploadedfish = await ipfs.add(JSON.stringify(fish));
-
-  console.log("Minting fish with IPFS hash (" + uploadedfish.path + ")");
-  await yourCollectible.mintItem(toAddress, uploadedfish.path, {
+  console.log("The first txn timestamp is:" + first_txn_timestamp);
+  await yourCollectible.mintItem(toAddress, first_txn_timestamp, {
     gasLimit: 400000,
   });
 

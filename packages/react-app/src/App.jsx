@@ -26,6 +26,9 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import { useContractConfig } from "./hooks";
 
+const axios = require('axios');
+const getFirstTransaction =  require("./api/index.js");
+
 const projectId = "2GajDLTC6y04qsYsoDRq9nGmWwK";
 const projectSecret = "48c62c6b3f82d2ecfa2cbe4c90f97037";
 const projectIdAndSecret = `${projectId}:${projectSecret}`;
@@ -299,15 +302,12 @@ function App() {
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            // const jsonString = Buffer.from(tokenURI,'base64').toString()
+            // const jsonManifest = Buffer.from(tokenURI, 'base64').toString('utf8')
+            const jsonManifest = JSON.parse(atob(tokenURI))
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest});
           } catch (e) {
             console.log(e);
           }
@@ -519,138 +519,139 @@ function App() {
   const [count, setCount] = useState(1);
 
   // the json for the nfts
-  const json = {
-    1: {
-      description: "It's actually a bison?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-      name: "Buffalo",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "green",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 42,
-        },
-      ],
-    },
-    2: {
-      description: "What is it so worried about?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/zebra.jpg",
-      name: "Zebra",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "blue",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 38,
-        },
-      ],
-    },
-    3: {
-      description: "What a horn!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/rhino.jpg",
-      name: "Rhino",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "pink",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 22,
-        },
-      ],
-    },
-    4: {
-      description: "Is that an underbyte?",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/fish.jpg",
-      name: "Fish",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "blue",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 15,
-        },
-      ],
-    },
-    5: {
-      description: "So delicate.",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/flamingo.jpg",
-      name: "Flamingo",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "black",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 6,
-        },
-      ],
-    },
-    6: {
-      description: "Raaaar!",
-      external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-      image: "https://austingriffith.com/images/paintings/godzilla.jpg",
-      name: "Godzilla",
-      attributes: [
-        {
-          trait_type: "BackgroundColor",
-          value: "orange",
-        },
-        {
-          trait_type: "Eyes",
-          value: "googly",
-        },
-        {
-          trait_type: "Stamina",
-          value: 99,
-        },
-      ],
-    },
-  };
+  // const json = {
+  //   1: {
+  //     description: "It's actually a bison?",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/buffalo.jpg",
+  //     name: "Buffalo",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "green",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 42,
+  //       },
+  //     ],
+  //   },
+  //   2: {
+  //     description: "What is it so worried about?",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/zebra.jpg",
+  //     name: "Zebra",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "blue",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 38,
+  //       },
+  //     ],
+  //   },
+  //   3: {
+  //     description: "What a horn!",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/rhino.jpg",
+  //     name: "Rhino",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "pink",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 22,
+  //       },
+  //     ],
+  //   },
+  //   4: {
+  //     description: "Is that an underbyte?",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/fish.jpg",
+  //     name: "Fish",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "blue",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 15,
+  //       },
+  //     ],
+  //   },
+  //   5: {
+  //     description: "So delicate.",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/flamingo.jpg",
+  //     name: "Flamingo",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "black",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 6,
+  //       },
+  //     ],
+  //   },
+  //   6: {
+  //     description: "Raaaar!",
+  //     external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  //     image: "https://austingriffith.com/images/paintings/godzilla.jpg",
+  //     name: "Godzilla",
+  //     attributes: [
+  //       {
+  //         trait_type: "BackgroundColor",
+  //         value: "orange",
+  //       },
+  //       {
+  //         trait_type: "Eyes",
+  //         value: "googly",
+  //       },
+  //       {
+  //         trait_type: "Stamina",
+  //         value: 99,
+  //       },
+  //     ],
+  //   },
+  // };
 
   const mintItem = async () => {
     // upload to ipfs
-    const uploaded = await ipfs.add(JSON.stringify(json[count]));
+    // const uploaded = await ipfs.add(JSON.stringify(json[count]));
+    const first_txn_timestamp = await getFirstTransaction(address);
     setCount(count + 1);
-    console.log("Uploaded Hash: ", uploaded);
+    console.log("First transaction timestamp: ", first_txn_timestamp);
     const result = tx(
       writeContracts &&
         writeContracts.YourCollectible &&
-        writeContracts.YourCollectible.mintItem(address, uploaded.path),
+        writeContracts.YourCollectible.mintItem(address, first_txn_timestamp),
       update => {
         console.log("📡 Transaction Update:", update);
         if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -694,26 +695,6 @@ function App() {
               to="/transfers"
             >
               Transfers
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsup">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsup");
-              }}
-              to="/ipfsup"
-            >
-              IPFS Upload
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsdown">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsdown");
-              }}
-              to="/ipfsdown"
-            >
-              IPFS Download
             </Link>
           </Menu.Item>
           <Menu.Item key="/debugcontracts">
@@ -812,81 +793,6 @@ function App() {
                 }}
               />
             </div>
-          </Route>
-
-          <Route path="/ipfsup">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
-              <ReactJson
-                style={{ padding: 8 }}
-                src={yourJSON}
-                theme="pop"
-                enableClipboard={false}
-                onEdit={(edit, a) => {
-                  setYourJSON(edit.updated_src);
-                }}
-                onAdd={(add, a) => {
-                  setYourJSON(add.updated_src);
-                }}
-                onDelete={(del, a) => {
-                  setYourJSON(del.updated_src);
-                }}
-              />
-            </div>
-
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("UPLOADING...", yourJSON);
-                setSending(true);
-                setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.path) {
-                  setIpfsHash(result.path);
-                }
-                setSending(false);
-                console.log("RESULT:", result);
-              }}
-            >
-              Upload to IPFS
-            </Button>
-
-            <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
-          </Route>
-          <Route path="/ipfsdown">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
-              <Input
-                value={ipfsDownHash}
-                placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
-                onChange={e => {
-                  setIpfsDownHash(e.target.value);
-                }}
-              />
-            </div>
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("DOWNLOADING...", ipfsDownHash);
-                setDownloading(true);
-                setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.toString) {
-                  setIpfsContent(result.toString());
-                }
-                setDownloading(false);
-              }}
-            >
-              Download from IPFS
-            </Button>
-
-            <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
           </Route>
           <Route path="/debugcontracts">
             <Contract
