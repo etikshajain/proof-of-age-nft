@@ -3,14 +3,10 @@ pragma solidity ^0.8.13;
 
 
 //Libraries
-import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
-import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/utils/Base64.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
-/// @title Library for rendering out ProofOfAge dynamic SVG
-/// @author <https://github.com/etikshajain>
-/// @author <https://github.com/proxima424>
-
-library Renderer  {
+contract Renderer  {
     using Base64 for bytes;
 
     function constructTokenURI(address user, uint256 first_txn_timestamp)

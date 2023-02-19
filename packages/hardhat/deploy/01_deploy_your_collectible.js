@@ -1,4 +1,4 @@
-// deploy/00_deploy_your_contract.js
+// deploy/01_deploy_your_contract.js
 
 const { ethers } = require("hardhat");
 
@@ -9,6 +9,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // You might need the previously deployed renderer:
   const renderer = await ethers.getContract("Renderer", deployer);
+
+  console.log("deploying YourCollectible..")
 
   await deploy("YourCollectible", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
