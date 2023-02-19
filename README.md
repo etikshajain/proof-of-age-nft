@@ -1,3 +1,11 @@
+## Contracts deployed and verified on Goerli testnet
+
+deployer: 0xf3cc1a256989557484975e24a29c638fe756f6b1
+
+### Renderer.sol: 0x39A96415877d441d25aFB059AEf4218Db5C2256A
+
+### YourCollectible.sol: 0xcF7F46998A5808C0bB3fC323F39ddBEd0b53C902
+
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
 ## 🚩 Challenge 0: 🎟 Simple NFT Example 🤓
