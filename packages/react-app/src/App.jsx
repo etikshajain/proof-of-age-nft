@@ -304,10 +304,11 @@ function App() {
 
           try {
             // const jsonString = Buffer.from(tokenURI,'base64').toString()
-            // const jsonManifest = Buffer.from(tokenURI, 'base64').toString('utf8')
-            const jsonManifest = JSON.parse(atob(tokenURI))
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest});
+            const jsonManifest = JSON.parse(Buffer.from(tokenURI.split(',')[1], 'base64').toString('utf8'));
+            const svg_code = Buffer.from(jsonManifest.image.split(',')[1], 'base64').toString('utf8');
+            // console.log("jsonManifest", jsonManifest.name);
+            console.log("image", svg_code);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, name: jsonManifest.name, description: jsonManifest.description, image: svg_code});
           } catch (e) {
             console.log(e);
           }
@@ -715,8 +716,8 @@ function App() {
                 disabled={minting}
                 shape="round"
                 size="large"
-                onClick={() => {
-                  mintItem();
+                onClick={async () => {
+                  await mintItem();
                 }}
               >
                 MINT NFT
@@ -738,7 +739,8 @@ function App() {
                         }
                       >
                         <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
+                        <img src={`data:image/svg+xml;utf8,${encodeURIComponent(item.image)}`} />
+                          {/* <img src={item.image} style={{ maxWidth: 150 }} /> */}
                         </div>
                         <div>{item.description}</div>
                       </Card>
