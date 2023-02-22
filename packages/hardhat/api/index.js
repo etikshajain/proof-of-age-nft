@@ -2,7 +2,7 @@ const axios = require('axios');
 const ethers = require('ethers');
 require('dotenv').config({ path: './env' });
 
-module.exports = async function getFirstTransaction (address) {
+export default async function getFirstTransaction (address) {
     console.time()
     console.log(process.env.MY_API_KEY);
     
