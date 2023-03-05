@@ -8,7 +8,7 @@ A lot of people are building NFTs nowadays. But most of those NFTs are just stat
 
 This is a Dynamic NFT that is the proof of your age on Ethereum. It displays the time that passed since you made your first Ethereum transaction and hence is what we like to call, “Etherage”.
 
-![My Image](nft.jpeg)
+![My Image](nft.png)
 
 ## How we built it
 
