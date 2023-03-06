@@ -4,11 +4,11 @@
 
 ### Smart Contracts
 
-`/src/packages/hardhat/contracts`
+`/packages/hardhat/contracts`
 
 ### Frontend
 
-`/src/packages/react-app/src/App.jsx`
+`/packages/react-app/src/App.jsx`
 
 ## Inspiration
 
