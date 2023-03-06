@@ -1,5 +1,15 @@
 # Proof of Age NFT
 
+## Source code
+
+### Smart Contracts
+
+`/src/packages/hardhat/contracts`
+
+### Frontend
+
+`/src/packages/react-app/src/App.jsx`
+
 ## Inspiration
 
 A lot of people are building NFTs nowadays. But most of those NFTs are just static images of something that people find interesting with no deeper use case. There has been scarcity of NFTs that actually promote interactive and imaginative uses of a permissionless state machine aka EVM. We wanted to build an NFT that had a core blockchain background.
